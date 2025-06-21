@@ -1,3 +1,8 @@
+output "cloud_run_url" {
+  description = "Cloud Run service URL"
+  value       = google_cloud_run_v2_service.frontend.uri
+}
+
 output "service_url" {
   description = "Cloud Run service URL"
   value       = google_cloud_run_v2_service.frontend.uri
@@ -19,9 +24,14 @@ output "github_actions_service_account_key" {
   sensitive   = true
 }
 
-output "container_registry_url" {
-  description = "Container Registry URL"
-  value       = "gcr.io/${var.project_id}"
+output "artifact_registry_url" {
+  description = "Artifact Registry repository URL"
+  value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.giganoto_repo.repository_id}"
+}
+
+output "artifact_registry_repository_name" {
+  description = "Artifact Registry repository name"
+  value       = google_artifact_registry_repository.giganoto_repo.name
 }
 
 output "image_full_name" {
