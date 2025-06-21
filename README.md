@@ -1,16 +1,7 @@
 ## ギガノトカップ〜インフラ〜
 
 このプロジェクトは、ReactアプリケーションをGoogle Cloud Run + GitHub Actions CI/CDでデプロイするためのTerraformインフラストラクチャです。
-
-## 🏗️ インフラ構成
-
-- **Google Cloud Run**: コンテナ化されたReactアプリケーションのホスティング
-- **Artifact Registry**: Dockerイメージの保存
-- **Service Account**: GitHub Actions用の認証
-- **IAM**: 適切な権限設定
-- **GitHub Actions**: CI/CDパイプライン
-
-## 📋 前提条件
+##  前提条件
 
 1. **Google Cloud Platform アカウント**
    - プロジェクトの作成済み
@@ -22,7 +13,7 @@
    - Terraform >= 1.0
    - gcloud CLI
    - Docker
-   - Node.js >= 18
+   - Node.js 22.16.0
    ```
 
 3. **gcloud CLI 認証**
@@ -32,7 +23,7 @@
    gcloud auth application-default login
    ```
 
-## 🚀 セットアップ手順
+##  セットアップ手順
 
 ### 1. Terraform変数の設定
 
@@ -96,16 +87,6 @@ gcloud run services describe giganoto-frontend \
   --format="value(status.url)"
 ```
 
-**実際の例（giganoto-463603プロジェクト）:**
-```bash
-docker build -t asia-northeast1-docker.pkg.dev/giganoto-463603/giganoto-repo/giganoto-frontend:latest .
-docker push asia-northeast1-docker.pkg.dev/giganoto-463603/giganoto-repo/giganoto-frontend:latest
-gcloud run services update giganoto-frontend \
-  --image=asia-northeast1-docker.pkg.dev/giganoto-463603/giganoto-repo/giganoto-frontend:latest \
-  --region=asia-northeast1 \
-  --project=giganoto-463603
-```
-
 ## 継続的デプロイ（CI/CD）
 
 `main`ブランチへのプッシュで自動デプロイが実行されます：
@@ -114,7 +95,6 @@ gcloud run services update giganoto-frontend \
 2. **Dockerイメージ作成**: マルチステージビルドでイメージ作成
 3. **Artifact Registry**: イメージのプッシュ
 4. **Cloud Run**: サービスの更新
-5. **ヘルスチェック**: デプロイ後の動作確認
 
 ## ファイル構成
 
@@ -136,54 +116,7 @@ nginx.conf               # Nginx設定（SPA対応）
 Dockerfile              # マルチステージビルド設定
 ```
 
-## 📊 現在のプロジェクト状態
 
-このプロジェクトの現在の設定例：
-
-```bash
-# プロジェクトID
-giganoto-463603
-
-# デプロイ済みサービスURL
-https://giganoto-frontend-267485109612.asia-northeast1.run.app/
-
-# GitHub Actionsサービスアカウント
-giganoto-frontend-github-sa@giganoto-463603.iam.gserviceaccount.com
-
-# Artifact RegistryリポジトリURL
-asia-northeast1-docker.pkg.dev/giganoto-463603/giganoto-repo
-```
-
-### 設定確認コマンド
-```bash
-# 現在のTerraform出力を確認
-terraform output
-
-# Cloud Runサービス状態確認
-gcloud run services describe giganoto-frontend \
-  --region=asia-northeast1 \
-  --project=giganoto-463603
-
-# Artifact Registryリポジトリ確認
-gcloud artifacts repositories list \
-  --location=asia-northeast1 \
-  --project=giganoto-463603
-```
-
-## 🛠️ トラブルシューティング
-
-### Terraform出力が見つからないエラー
-```bash
-# エラー例: Warning: No outputs found
-# 解決方法1: Terraformの状態を確認
-terraform show
-
-# 解決方法2: リフレッシュ実行
-terraform refresh
-
-# 解決方法3: 再適用
-terraform apply
-```
 
 ### サービスアカウントキーの取得方法
 ```bash
